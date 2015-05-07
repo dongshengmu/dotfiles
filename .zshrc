@@ -1,5 +1,8 @@
 export DOT_CONFIG_HOME=~/dotfiles
 
+# path
+export PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:$HOME/bin:.
+
 # Source file, if it exists
 function try-source() {
   if [ -f $1 ]; then
@@ -114,9 +117,6 @@ zle -N zle-line-init
 # use ctrl+t to toggle autosuggestions(hopefully this wont be needed as
 # zsh-autosuggestions is designed to be unobtrusive)
 bindkey '^T' autosuggest-toggle
-
-# path
-PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/usr/X11R6/bin:$HOME/bin:.; export PATH
 
 # default EDITOR PAGER
 export BLOCKSIZE=K
