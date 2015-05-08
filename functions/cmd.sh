@@ -245,3 +245,41 @@ function o() {
 function tre() {
 	tree -aC -I '.git|node_modules|bower_components' --dirsfirst "$@" | less -FRNX;
 }
+
+#### Dongsheng's stuff ##########
+# `bat` build and test a HINT build. Shortcut for rapid build and test turn-around.
+# If build passed, then run a test to validate the build.
+# Sample: `bat test_transform`
+function bat() {
+	ant;
+	if [[ $? == 0 ]]; then
+		cd ~/dev/dev_tests/;
+		py.test -s -k $@;
+		cd -;
+	fi;
+}
+
+# `t` test, run py.test for HINT developement
+function t() {
+	cd ~/dev/dev_tests/;
+	py.test -s -k $@;
+	cd -;
+}
+
+# `dt` test, run py.test for HINT developement
+function dt() {
+	cd ~/dev/dev_tests/;
+	HINT_DEBUG=1 py.test -s -k $@;
+	cd -;
+}
+
+# `mnt` mvn compile then run py.test
+function mat() {
+	# mvn install -Dmaven.test.skip=true;
+	mvn compile;
+	if [[ $? == 0 ]]; then
+		cd ~/dev/dev_tests/;
+		py.test -s -k $@;
+		cd -;
+	fi;
+}
