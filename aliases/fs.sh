@@ -94,9 +94,9 @@ alias pn='ipython notebook'
 alias pnbconvert='ipython nbconvert --to slides --post serve my.ipynb'
 
 # maven shortcuts
-alias mi='mvn install'
-alias mc='mvn compile'
-alias mnt='mvn install -Dmaven.test.skip=true'
+alias mi='time mvn install'
+alias mc='time mvn compile'
+alias mnt='time mvn install -Dmaven.test.skip=true'
 
 export PYTHONSTARTUP=~/.pythonrc
 export PYTHONPATH=/usr/local/lib/python2.7/site-packages:$PYTHONPATH

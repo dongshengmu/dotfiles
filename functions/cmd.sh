@@ -276,7 +276,7 @@ function dt() {
 # `mnt` mvn compile then run py.test
 function mat() {
 	# mvn install -Dmaven.test.skip=true;
-	mvn compile;
+	time mvn compile;
 	if [[ $? == 0 ]]; then
 		cd ~/dev/dev_tests/;
 		py.test -s -k $@;
