@@ -3,135 +3,106 @@ alias g="git"
 alias gbd="git branch -d $1"
 alias gnb="git checkout -b $1"
 
+alias gbase="git fetch origin && git rebase origin/master"
+
 # `sgnb` create new branch for those repos which have local changes
 function sgnb() {
 	cmd="if ! git diff-index \-\-quiet HEAD \-\-; then git checkout \-b $1; fi;"
 	sdv run $cmd
 }
 
-alias gbase="git fetch origin && git rebase origin/master"
+# `gitcmd` 
+# 1st argument specifies what git command to run.
+# With no more arguments, run `git <cmd>` if in a working repo, else run it in all git repos in a workspace.
+# 2nd argument specifies the path of a repo, in which the command will run. If it is "a", run in all repos.
+function gitcmd() {
+	if [ $# -eq 0 ]; then
+		echo "No git command specified!"
+	elif [ $# -eq 1 ]; then
+		cmd=$1;
+		if $(git rev-parse --is-inside-work-tree >/dev/null 2>&1); then
+			# currently under a working repo, run the git cmd 
+			git $cmd;
+		else
+			# not in a working repo, run the git cmd for all repos
+			sdv run git $cmd;
+		fi;
+	else
+		cmd=$1;
+		dir=$2;
+		shift 2;
+		if [[ $dir == "a" ]]; then
+			# all directory
+			sdv run git $cmd $@;
+		else
+			# a specified directory
+			cd $dir;
+			git $cmd $@;
+			cd -;
+		fi;
+	fi;
+}
+
+# Similar to `gitcmd`, but filter out repos without local change.
+function gitcmd_for_changed_repo() {
+	if [ $# -eq 0 ]; then
+		echo "No git command specified!"
+	elif [ $# -eq 1 ]; then
+		cmd=$1;
+		if $(git rev-parse --is-inside-work-tree >/dev/null 2>&1); then
+			# currently under a working repo, run the git cmd 
+			git $cmd;
+		else
+			# not in a working repo, run the git cmd for all repos with local changes
+			cmd_co="if ! git diff-index \-\-quiet HEAD \-\-; then git $cmd; fi;"
+			sdv run $cmd_co
+		fi;
+	else
+		cmd=$1;
+		dir=$2;
+		shift 2;
+		if [[ $dir == "a" ]]; then
+			# run the git cmd for all repos with local changes
+			cmd_co="if ! git diff-index \--quiet HEAD \--; then git $cmd $@; fi;"
+			echo "sdv run $cmd_co"
+			sdv run $cmd_co
+		else
+			# a specified directory
+			cd $dir;
+			pwd;
+			echo "git $cmd $@"
+			git $cmd "$@";
+			cd -;
+		fi;
+	fi;
+}
 
 # Git checkout
-# alias gc="git checkout $@"
-alias sgc="sdv run git checkout $@"
-function gc() {
-	if $(git rev-parse --is-inside-work-tree >/dev/null 2>&1); then
-		git checkout $@;
-	else
-		if [ $# -eq 0 ]; then
-			sdv run git status;
-		else
-			cd $1;
-			shift;
-			git checkout $@;
-			cd -;
-		fi;
-	fi;
-}
+alias gc="gitcmd checkout"
 
 # git add
-# alias ga="git add"
-function ga() {
-	if $(git rev-parse --is-inside-work-tree >/dev/null 2>&1); then
-		git add $@;
-	else
-		if [ $# -eq 0 ]; then
-			sdv run git status;
-		else
-			cd $1;
-			shift;
-			git add $@;
-			cd -;
-		fi;
-	fi;
-}
+alias ga="gitcmd add"
 
 # git commit
-# alias gi="git commit"
-function gi() {
-	if $(git rev-parse --is-inside-work-tree >/dev/null 2>&1); then
-		git commit $@;
-	else
-		if [ $# -eq 0 ]; then
-			sdv run git status;
-		else
-			cd $1;
-			shift;
-			git commit $@;
-			cd -;
-		fi;
-	fi;
-}
+alias gi="gitcmd commit"
 
 # git status
-# alias gs="git status"
-# `gs` do `git status` if in a git repo, otherwise do `sdv run git status`
-function gs() {
-	if $(git rev-parse --is-inside-work-tree >/dev/null 2>&1); then
-		git status;
-	else
-		if [ $# -eq 0 ]; then
-			sdv run git status;
-		else
-			cd $@;
-			git status;
-			cd -;
-		fi;
-	fi;
-}
+alias gs="gitcmd status"
+
+# git fetch
+alias gf="gitcmd fetch"
+
+# git pull
+alias gp="gitcmd pull"
 
 # git gui
-# alias gg="git gui"
-function gg() {
-	if $(git rev-parse --is-inside-work-tree >/dev/null 2>&1); then
-		git gui;
-	else
-		if [ $# -eq 0 ]; then
-			# run `git gui` for those repos which have local changes
-			sdv run "if ! git diff-index \-\-quiet HEAD \-\-; then git gui; fi;";
-		else
-			cd $1;
-			git gui;
-			cd -;
-		fi;
-	fi;
-}
+alias gg="gitcmd_for_changed_repo gui"
 
 # git branch
-# alias gb="git branch"
-alias sgb="sdv run git branch"
-function gb() {
-	if $(git rev-parse --is-inside-work-tree >/dev/null 2>&1); then
-		git branch $@;
-	else
-		if [ $# -eq 0 ]; then
-			sdv run git branch;
-		else
-			cd $1;
-			shift;
-			git branch $@;
-			cd -;
-		fi;
-	fi;
-}
+alias gb="gitcmd branch"
 
 # git diff
-# alias gd="git diff"
-alias sgd="sdv run git diff"
-function gd() {
-	if $(git rev-parse --is-inside-work-tree >/dev/null 2>&1); then
-		git diff $@;
-	else
-		if [ $# -eq 0 ]; then
-			sdv run git diff;
-		else
-			cd $1;
-			shift;
-			git diff $@;
-			cd -;
-		fi;
-	fi;
-}
+alias gd="gitcmd diff"
 
 # last tag
 alias lasttag="git describe --abbrev=0 --tags"

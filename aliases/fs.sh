@@ -97,6 +97,7 @@ alias pnbconvert='ipython nbconvert --to slides --post serve my.ipynb'
 alias mi='time mvn install'
 alias mc='time mvn compile'
 alias mnt='time mvn install -Dmaven.test.skip=true'
+alias mcint='time mvn clean install -Dmaven.test.skip=true'
 
 export PYTHONSTARTUP=~/.pythonrc
 export PYTHONPATH=/usr/local/lib/python2.7/site-packages:$PYTHONPATH
