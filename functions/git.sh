@@ -8,6 +8,100 @@ __git_files () {
     _wanted files expl 'local files' _files     
 }
 
+# `sgnb` create new branch for those repos which have local changes
+function sgnb() {
+  cmd="if ! git diff-index \-\-quiet HEAD \-\-; then git checkout \-b $1; fi;"
+  sdv run $cmd
+}
+
+# `gitcmd` 
+# 1st argument specifies what git command to run.
+# With no more arguments, run `git <cmd>` if in a working repo, else run it in all git repos in a workspace.
+# 2nd argument specifies the path of a repo, in which the command will run. If it is "a", run in all repos.
+function gitcmd() {
+  if [ $# -eq 0 ]; then
+    echo "No git command specified!";
+  elif $(git rev-parse --is-inside-work-tree >/dev/null 2>&1); then
+    # currently under a working repo
+    cmd=$1;
+    shift;
+    if [[ $1 == "a" ]]; then
+      # run the git cmd in all repos
+      shift;
+      sdv run git $cmd $@;
+    else
+      # run the git cmd in current repo
+      git $cmd $@;
+    fi;
+  elif [ $# -eq 1 ]; then
+    # not in a working repo, and no dir specification
+    cmd=$1;
+    shift;
+    sdv run git $cmd $@;
+  else
+    cmd=$1;
+    dir=$2;
+    shift 2;
+    if [[ $dir == "a" ]]; then
+      # all directory
+      sdv run git $cmd $@;
+    else
+      # a specified directory
+      cd $dir;
+      if [[ $? = 0 ]]; then
+        git $cmd $@;
+        cd -;
+      fi;
+    fi;
+  fi;
+}
+
+# Similar to `gitcmd`, but filter out repos without local change.
+function gitcmd_for_changed_repo() {
+  if [ $# -eq 0 ]; then
+    echo "No git command specified!";
+  elif $(git rev-parse --is-inside-work-tree >/dev/null 2>&1); then
+    # currently under a working repo
+    cmd=$1;
+    shift;
+    if [[ $1 == "a" ]]; then
+      # run the git cmd in all repos
+      shift;
+      cmd_co="if ! git diff-index \--quiet HEAD \--; then git $cmd $@; fi;"
+      echo "sdv run $cmd_co"
+      sdv run $cmd_co
+    else
+      # run the git cmd in current repo
+      git $cmd $@;
+    fi;
+  elif [ $# -eq 1 ]; then
+    # not in a working repo, and no dir specification
+    cmd=$1;
+    shift;
+    cmd_co="if ! git diff-index \--quiet HEAD \--; then git $cmd $@; fi;"
+    echo "sdv run $cmd_co"
+    sdv run $cmd_co
+  else
+    cmd=$1;
+    dir=$2;
+    shift 2;
+    if [[ $dir == "a" ]]; then
+      # all directory
+      cmd_co="if ! git diff-index \--quiet HEAD \--; then git $cmd $@; fi;"
+      echo "sdv run $cmd_co"
+      sdv run $cmd_co
+    else
+      # a specified directory
+      cd $dir;
+      if [[ $? = 0 ]]; then
+        git $cmd $@;
+        cd -;
+      fi;
+    fi;
+  fi;
+}
+
+
 # git log
 function gl() {
   hash_width=10
