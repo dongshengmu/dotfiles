@@ -96,8 +96,9 @@ alias pnbconvert='ipython nbconvert --to slides --post serve my.ipynb'
 # maven shortcuts
 alias mi='time mvn install'
 alias mc='time mvn compile'
-alias mnt='time mvn install -Dmaven.test.skip=true'
-alias mcint='time mvn clean install -Dmaven.test.skip=true'
+alias mnt='time mvn install -DskipTests=true'
+alias mi='time mvn clean install'
+alias mcint='time mvn clean install -DskipTests=true' # -Dmaven.test.skip=true skips building test jar
 
 export PYTHONSTARTUP=~/.pythonrc
 export PYTHONPATH=/usr/local/lib/python2.7/site-packages:$PYTHONPATH
