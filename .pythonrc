@@ -1,0 +1,41 @@
+#!/usr/bin/env python
+#!/usr/bin/python
+
+import sys
+import os
+import atexit
+
+# tab completion
+# from http://www.doughellmann.com/PyMOTW/rlcompleter/index.html
+try:
+    import readline
+except ImportError:
+    # Silently ignore missing readline module
+    pass
+else:
+    import rlcompleter
+    if 'libedit' in readline.__doc__:   # Mac
+        # better to "brew install readline python" install the GNU readline
+        print('Please intall GNU readline by "sudo easy_install readline", the libedit readline has caveat to support color prompt.')
+        readline.parse_and_bind ("bind '\t' rl_complete")
+    else:
+        # color prompt
+        sys.ps1 = '\001\033[1;34m\002>>> \001\033[0m\002'
+        sys.ps2 = '\001\033[1;34m\002... \001\033[0m\002'
+        readline.parse_and_bind("C-o: operate-and-get-next")
+        readline.parse_and_bind("tab: complete")
+# history
+# from http://dotfiles.org/~remote/.pythonrc.py
+histfile = os.path.join(os.environ["HOME"], ".python_history")
+try:
+    readline.read_history_file(histfile)
+except IOError:
+    pass
+
+atexit.register(readline.write_history_file, histfile)
+del os, histfile
+
+def H():
+    for x in xrange(readline.get_current_history_length()):
+        print(readline.get_history_item(x+1))
+

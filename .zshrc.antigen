@@ -10,40 +10,9 @@ function try-source() {
   fi
 }
 
-source "${DOT_CONFIG_HOME}/.zgen/zgen.zsh"
-# if the init scipt doesn't exist
-if ! zgen saved; then
-    echo "Creating a zgen save"
+source $DOT_CONFIG_HOME/antigen.zsh
 
-    zgen oh-my-zsh
-
-    # plugins
-    zgen oh-my-zsh plugins/git
-    zgen oh-my-zsh plugins/sudo
-    zgen oh-my-zsh plugins/command-not-found
-    zgen load zsh-users/zsh-syntax-highlighting
-
-    # bulk load
-    zgen loadall <<EOPLUGINS
-        #fasd
-        zsh-users/zsh-syntax-highlighting
-        zsh-users/zsh-history-substring-search
-        #jira
-        #jsontools
-EOPLUGINS
-    # ^ can't indent this EOPLUGINS
-
-    # completions
-    zgen load zsh-users/zsh-completions src
-
-    zgen load robbyrussell/oh-my-zsh lib/
-
-    # theme
-    zgen oh-my-zsh themes/arrow
-
-    # save all to init script
-    zgen save
-fi
+antigen bundle robbyrussell/oh-my-zsh lib/
 
 HISTFILE=~/.histfile
 HISTSIZE=100000
@@ -76,6 +45,16 @@ else
     fi
 fi
 
+# antigen bundles (https://github.com/zsh-users/antigen)
+antigen bundles <<EOBUNDLES
+  fasd
+  zsh-users/zsh-syntax-highlighting
+  zsh-users/zsh-history-substring-search
+  jira
+  jsontools
+EOBUNDLES
+
+try-source ~/.antigen/repos/https-COLON--SLASH--SLASH-github.com-SLASH-zsh-users-SLASH-zsh-history-substring-search.git/zsh-history-substring-search.zsh
 # bind UP and DOWN arrow keys
 zmodload zsh/terminfo
 bindkey "$terminfo[kcuu1]" history-substring-search-up
@@ -99,9 +78,6 @@ bindkey '^[[B' history-search-forward
 bindkey '^A' beginning-of-line
 bindkey '^E' end-of-line
 
-# bind R for history search
-bindkey '^R' history-incremental-search-backward
-
 # activate theme
 # antigen theme https://gist.github.com/sethmcl/daa7bfad597bb5f423d6 ice
 # antigen theme https://gist.github.com/sethmcl/5567c8519760c8e7b5d2 agnoster
@@ -122,6 +98,9 @@ bindkey -v
 
 try-source ~/.nvm/nvm.sh
 
+antigen apply
+
+
 # for agnoster theme
 # export DEFAULT_USER=
 
@@ -135,3 +114,4 @@ export EDITOR="mvim -v"
 export CLICOLOR=1
 export LESS="-EirMXx1,5"
 export PAGER=less
+

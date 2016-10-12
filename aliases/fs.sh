@@ -17,10 +17,10 @@ alias vi=vim
 alias hosts='sudo $EDITOR /etc/hosts'
 
 # Detect which `ls` flavor is in use
-if ls --color > /dev/null 2>&1; then # GNU `ls`
-  colorflag="--color"
-else # OS X `ls`
+if [[ "$OSTYPE" =~ ^darwin ]]; then
   colorflag="-G"
+else # OS X `ls`
+  colorflag="--color"
 fi
 
 # save my wrists
@@ -89,9 +89,9 @@ alias fbuild='find . -name "build.xml" | xargs egrep -nw $1'
 alias fa='find . -type file | xargs egrep -nw $1'
 
 # python
-alias py='ipython'
-alias pn='ipython notebook'
-alias pnbconvert='ipython nbconvert --to slides --post serve my.ipynb'
+alias py='~/anaconda/bin/ipython'
+alias pn='~/anaconda/bin/jupyter notebook &'
+alias pnbconvert='~/anaconda/bin/ipython nbconvert --to slides --post serve my.ipynb'
 
 # maven shortcuts
 alias mi='time mvn install'
