@@ -11,7 +11,7 @@ function try-source() {
 }
 
 source "${DOT_CONFIG_HOME}/.zgen/zgen.zsh"
-# if the init scipt doesn't exist
+# if the init script doesn't exist
 if ! zgen saved; then
     echo "Creating a zgen save"
 

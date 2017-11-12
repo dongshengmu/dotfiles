@@ -89,9 +89,9 @@ alias fbuild='find . -name "build.xml" | xargs egrep -nw $1'
 alias fa='find . -type file | xargs egrep -nw $1'
 
 # python
-alias py='~/anaconda/bin/ipython'
-alias pn='~/anaconda/bin/jupyter notebook &'
-alias pnbconvert='~/anaconda/bin/ipython nbconvert --to slides --post serve my.ipynb'
+alias py='ipython'
+# alias pn='jupyter notebook --no-browser &'
+alias pnbconvert='ipython nbconvert --to slides --post serve my.ipynb'
 
 # maven shortcuts
 alias mi='time mvn install'
@@ -99,8 +99,3 @@ alias mc='time mvn compile'
 alias mnt='time mvn install -DskipTests=true'
 alias mi='time mvn clean install'
 alias mcint='time mvn clean install -DskipTests=true' # -Dmaven.test.skip=true skips building test jar
-
-export PYTHONSTARTUP=~/.pythonrc
-export PYTHONPATH=/usr/local/lib/python2.7/site-packages:$PYTHONPATH
-export SPLUNK_HOME=/Applications/Splunk
-
