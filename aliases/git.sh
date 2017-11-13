@@ -4,45 +4,34 @@ alias gbd="git branch -d $1"
 alias gnb="git checkout -b $1"
 
 alias gbase="git fetch origin && git rebase origin/master"
-alias gbasea="sdv run -- git fetch origin && git rebase origin/master"
 
 # Git checkout
-alias gc="gitcmd checkout"
-alias gca="sdv run -- git checkout"
+alias gc="git checkout"
 
 # git add
-alias ga="gitcmd add"
-alias gaa="sdv run -- git add"
+alias ga="git add"
 
 # git commit
-alias gi="gitcmd commit"
-alias gia="sdv run -- git commit"
+alias gi="git commit"
 
 # git status
-alias gs="gitcmd status"
-alias gsa="sdv run -- git status a -sb"
+alias gs="git status"
 
 # git fetch
-alias gf="gitcmd fetch"
-alias gfa="sdv run -- git fetch"
+alias gf="git fetch"
 
 # git pull
-alias gp="gitcmd pull"
-alias gpa="sdv run -- git pull"
+alias gp="git pull"
 
 # git gui
-alias gg="gitcmd_for_changed_repo gui"
+alias gg="git gui"
+#alias gg="git_for_changed_repo gui"
 
 # git branch
-alias gb="gitcmd branch"
-alias gba="sdv run -- git branch"
+alias gb="git branch"
 
 # git diff
-alias gd="gitcmd diff"
-alias gda="sdv run -- git diff"
-
-# git log
-alias gla='sdv run -- "source ~/dotfiles/functions/git.sh; gl"'
+alias gd="git diff"
 
 # last tag
 alias lasttag="git describe --abbrev=0 --tags"

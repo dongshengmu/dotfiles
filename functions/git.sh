@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # take this repo and copy it to somewhere else minus the .git stuff.
 function gitexport(){
   mkdir -p "$1"
@@ -11,7 +12,6 @@ __git_files () {
 # `sgnb` create new branch for those repos which have local changes
 function sgnb() {
   cmd="if ! git diff-index --quiet HEAD --; then git checkout -b $1; fi;"
-  sdv run -- $cmd
 }
 
 # `gitcmd` 
@@ -28,7 +28,6 @@ function gitcmd() {
     if [[ $1 == "a" ]]; then
       # run the git cmd in all repos
       shift;
-      sdv run -- git $cmd $@;
     else
       # run the git cmd in current repo
       git $cmd $@;
@@ -37,14 +36,12 @@ function gitcmd() {
     # not in a working repo, and no dir specification
     cmd=$1;
     shift;
-    sdv run -- git $cmd $@;
   else
     cmd=$1;
     dir=$2;
     shift 2;
     if [[ $dir == "a" ]]; then
       # all directory
-      sdv run -- git $cmd $@;
     else
       # a specified directory
       cd $dir;
@@ -68,8 +65,6 @@ function gitcmd_for_changed_repo() {
       # run the git cmd in all repos
       shift;
       cmd_co="if ! git diff-index --quiet HEAD --; then git $cmd $@; fi;"
-      echo "sdv run -- $cmd_co"
-      sdv run -- $cmd_co
     else
       # run the git cmd in current repo
       git $cmd $@;
@@ -79,8 +74,6 @@ function gitcmd_for_changed_repo() {
     cmd=$1;
     shift;
     cmd_co="if ! git diff-index --quiet HEAD --; then git $cmd $@; fi;"
-    echo "sdv run -- $cmd_co"
-    sdv run -- $cmd_co
   else
     cmd=$1;
     dir=$2;
@@ -88,8 +81,6 @@ function gitcmd_for_changed_repo() {
     if [[ $dir == "a" ]]; then
       # all directory
       cmd_co="if ! git diff-index --quiet HEAD --; then git $cmd $@; fi;"
-      echo "sdv run -- $cmd_co"
-      sdv run -- $cmd_co
     else
       # a specified directory
       cd $dir;
